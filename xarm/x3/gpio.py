@@ -55,18 +55,18 @@ class GPIO(Base):
 
         code = 0
 
-        if ret1[0] == 0 and len(ret1) == 2:
-            versions[0] = ret1[1]
+        if ret1[0] in [0, 1, 2] and len(ret1) > 1:
+            versions[0] = ret1[1] if abs(ret1[1]) < 1000 else '*'
         else:
             code = ret1[0]
 
-        if ret2[0] == 0 and len(ret2) == 2:
-            versions[1] = ret2[1]
+        if ret2[0] in [0, 1, 2] and len(ret2) > 1:
+            versions[1] = ret2[1] if abs(ret2[1]) < 1000 else '*'
         else:
             code = ret2[0]
 
-        if ret3[0] == 0 and len(ret3) == 2:
-            versions[2] = ret3[1]
+        if ret3[0] in [0, 1, 2] and len(ret3) > 1:
+            versions[2] = ret3[1] if abs(ret3[1]) < 1000 else '*'
         else:
             code = ret3[0]
         # if code != 0:
@@ -76,21 +76,45 @@ class GPIO(Base):
         #             versions = [ret1[1], ret2[1], ret3[1]]
 
         return code, '.'.join(map(str, versions))
-    
+
     @xarm_is_connected(_type='get')
     def get_tgpio_digital(self, ionum=None):
         assert ionum is None or ionum == 0 or ionum == 1 or ionum == 2 or ionum == 3 or ionum == 4, 'The value of parameter ionum can only be 0 or 1 or None.'
         if self.check_is_simulation_robot():
-            return 0, [0, 0] if ionum is None else 0
+            return 0, [0, 0, 0, 0] if ionum is None else 0
         if ionum == 2:
-            # only available in Lite6
+            # Only available for Lite6 and 850
             ret = self.arm_cmd.tgpio_addr_r16(0x0A12)
             return ret[0], ret[1] & 0x0001
         else:
             ret = self.arm_cmd.tgpio_get_digital()
             if ret[0] == 0:
                 self.tgpio_state['digital'] = ret[1:]
-            return ret[0], ret[1:] if ionum is None else ret[ionum+1 if ionum < 3 else ionum]
+            return ret[0], ret[1:] if ionum is None else ret[ionum + 1 if ionum < 3 else ionum]
+
+    @xarm_is_connected(_type='get')
+    def get_tool_digital_input(self, ionum=None):
+        assert ionum is None or ionum == 0 or ionum == 1 or ionum == 2 or ionum == 3 or ionum == 4, 'The value of parameter ionum can only be 0 or 1 or None.'
+        if self.check_is_simulation_robot():
+            return 0, [0, 0, 0, 0, 0] if ionum is None else 0
+        if ionum == 2:
+            # Only available for Lite6 and 850
+            ret = self.arm_cmd.tgpio_addr_r16(0x0A12)
+            return ret[0], ret[1] & 0x0001
+        elif isinstance(ionum, int):
+            ret = self.arm_cmd.tgpio_get_digital()
+            if ret[0] == 0:
+                self.tgpio_state['digital'] = ret[1:]
+            return ret[0], ret[ionum+1 if ionum < 3 else ionum]
+        else:
+            ret1 = self.arm_cmd.tgpio_get_digital()
+            if ret1[0] == 0:
+                self.tgpio_state['digital'] = ret1[1:]
+            ret2 = [0]
+            if self.is_lite6 or self.is_850:
+                ret2 = self.arm_cmd.tgpio_addr_r16(0x0A12)
+                ret1.insert(3, ret2[1])
+            return ret1[0] or ret2[0], ret1[1:4] if self.is_lite6 else ret1[1:] if self.is_850 or int(self.sn[2:6]) >= 1305 else ret1[1:3]
     
     @xarm_is_connected(_type='get')
     def get_tgpio_output_digital(self, ionum=None):
@@ -288,9 +312,9 @@ class GPIO(Base):
 
     @xarm_is_connected(_type='get')
     def get_cgpio_li_state(self, Ci_Li, timeout=3, is_ci=True):
-        start_time = time.monotonic()
         is_first = True
-        while is_first or time.monotonic() - start_time < timeout:
+        expired = (time.monotonic() + timeout) if timeout is not None and timeout > 0 else 0
+        while is_first or expired == 0 or time.monotonic() < expired:
             code = 0
             is_first = False
             if not self.connected or self.state == 4:
@@ -312,9 +336,9 @@ class GPIO(Base):
 
     @xarm_is_connected(_type='get')
     def get_tgpio_li_state(self, Ti_Li, timeout=3):
-        start_time = time.monotonic()
         is_first = True
-        while is_first or time.monotonic() - start_time < timeout:
+        expired = (time.monotonic() + timeout) if timeout is not None and timeout > 0 else 0
+        while is_first or expired == 0 or time.monotonic() < expired:
             code = 0
             is_first = False
             if not self.connected or self.state == 4:
@@ -336,7 +360,7 @@ class GPIO(Base):
     @xarm_wait_until_cmdnum_lt_max
     @xarm_is_ready(_type='set')
     @xarm_is_not_simulation_mode(ret=0)
-    def set_suction_cup(self, on, wait=True, timeout=3, delay_sec=None, sync=True, hardware_version=1):
+    def set_vacuum_gripper(self, on, wait=True, timeout=3, delay_sec=None, sync=True, hardware_version=1):
         if on:
             code1 = self.set_tgpio_digital(ionum=0 if hardware_version == 1 else 3, value=1, delay_sec=delay_sec, sync=sync)
             code2 = self.set_tgpio_digital(ionum=1 if hardware_version == 1 else 4, value=0, delay_sec=delay_sec, sync=sync)
@@ -345,31 +369,32 @@ class GPIO(Base):
             code2 = self.set_tgpio_digital(ionum=1 if hardware_version == 1 else 4, value=1, delay_sec=delay_sec, sync=sync)
         code = code1 if code2 == 0 else code2
         if code == 0 and wait:
-            start = time.monotonic()
             code = APIState.SUCTION_CUP_TOUT
-            if delay_sec is not None and delay_sec > 0:
-                timeout += delay_sec
-            while time.monotonic() - start < timeout:
-                ret = self.get_suction_cup(hardware_version=hardware_version)
-                if ret[0] == XCONF.UxbusState.ERR_CODE:
+            expired = (time.monotonic() + timeout) if timeout is not None and timeout > 0 else 0
+            if delay_sec is not None and delay_sec > 0 and expired != 0:
+                expired += delay_sec
+            while expired == 0 or time.monotonic() < expired:
+                ret, state = self.get_vacuum_gripper(hardware_version=hardware_version)
+                if ret == XCONF.UxbusState.ERR_CODE:
                     code = XCONF.UxbusState.ERR_CODE
                     break
-                if ret[0] == 0:
-                    if on and ret[1] == 1:
-                        code = 0
-                        break
-                    if not on and ret[1] == 0:
-                        code = 0
-                        break
+                elif ret == 0 and int(on) == state:
+                    code = 0
+                    break
                 if not self.connected or self.state == 4:
                     code = APIState.EMERGENCY_STOP
                     break
                 time.sleep(0.1)
-        self.log_api_info('API -> set_suction_cup(on={}, wait={}, delay_sec={}) -> code={}'.format(on, wait, delay_sec, code), code=code)
+        self.log_api_info('API -> set_vacuum_gripper(on={}, wait={}, delay_sec={}) -> code={}'.format(on, wait, delay_sec, code), code=code)
         return code
 
     @xarm_is_connected(_type='get')
-    def get_suction_cup(self, hardware_version=1):
+    def get_vacuum_gripper(self, hardware_version=1, **kwargs):
+        if kwargs.get('check_on', False):
+            code, digitals = self.get_tgpio_output_digital()
+            if digitals[0 if hardware_version == 1 else 3] != 1 or digitals[1 if hardware_version == 1 else 4] != 0:
+                # off
+                return code, -1
         return self.get_tgpio_digital(ionum=0 if hardware_version == 1 else 3)
 
     @xarm_wait_until_not_pause
@@ -377,9 +402,9 @@ class GPIO(Base):
     @xarm_is_ready(_type='set')
     @xarm_is_not_simulation_mode(ret=0)
     def set_tgpio_digital_with_xyz(self, ionum, value, xyz, fault_tolerance_radius):
-        assert isinstance(ionum, int) and 1 >= ionum >= 0
+        assert isinstance(ionum, int) and (1 >= ionum >= 0 or 4 >= ionum >= 3)
         assert fault_tolerance_radius >= 0, 'The value of parameter fault_tolerance_radius must be greater than or equal to 0.'
-        ret = self.arm_cmd.tgpio_position_set_digital(ionum, value, xyz, fault_tolerance_radius)
+        ret = self.arm_cmd.tgpio_position_set_digital(ionum - 1 if ionum >= 3 else ionum, value, xyz, fault_tolerance_radius)
         self.log_api_info('API -> set_tgpio_digital_with_xyz(ionum={}, value={}, xyz={}, fault_tolerance_radius={}) -> code={}'.format(ionum, value, xyz, fault_tolerance_radius, ret[0]), code=ret[0])
         return ret[0]
 
@@ -413,20 +438,17 @@ class GPIO(Base):
     @xarm_is_connected(_type='set')
     @xarm_is_not_simulation_mode(ret=False)
     def check_air_pump_state(self, state, timeout=3, hardware_version=1):
-        start_time = time.monotonic()
         is_first = True
-        while is_first or time.monotonic() - start_time < timeout:
+        expired = (time.monotonic() + timeout) if timeout is not None and timeout > 0 else 0
+        while is_first or expired == 0 or time.monotonic() < expired:
             is_first = False
             if not self.connected or self.state == 4:
                 return False
-            ret = self.get_suction_cup(hardware_version=hardware_version)
+            ret = self.get_vacuum_gripper(hardware_version=hardware_version)
             if ret[0] == XCONF.UxbusState.ERR_CODE:
                 return False
-            if ret[0] == 0:
-                if state and ret[1] == 1:
-                    return True
-                if not state and ret[1] == 0:
-                    return True
+            if ret[0] == 0 and int(state) == ret[1]:
+                return True
             time.sleep(0.1)
         return False
 
