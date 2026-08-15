@@ -55,13 +55,13 @@ ServoCodeMap = {
         },
         'cn': {
             'title': '关节过热',
-            'desc': '如果机械臂长时间运行温度过高，请停并机冷却后重启机械臂。如多次重启无效，请联系技术支持。',
+            'desc': '如果机械臂长时间运行温度过高，请停机并冷却后重启机械臂。如多次重启无效，请联系技术支持。',
         }
     },
     16: {
         'en': {
             'title': 'Encoder Initialization Error',
-            'desc': 'Please ensure that there is no external force to push the robotic arm when the  it\'s energized. Please restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.',
+            'desc': 'Please ensure that there is no external force to push the robotic arm when it\'s energized. Please restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.',
         },
         'cn': {
             'title': '编码器初始化异常',
@@ -111,7 +111,7 @@ ServoCodeMap = {
     21: {
         'en': {
             'title': 'Driver IC Initialization Error',
-            'desc': 'Please restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.If multiple reboots are invalid, please contact technical support.',
+            'desc': 'Please restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.',
         },
         'cn': {
             'title': '驱动IC初始化异常',
@@ -221,7 +221,7 @@ ServoCodeMap = {
     40: {
         'en': {
             'title': 'Joint Voltage Insufficient',
-            'desc': 'Please reduce the acceleration value in the Motion Settings.Please check if the controller emergency stop switch is released.',
+            'desc': 'Please reduce the acceleration value in the Motion Settings. Please check if the controller emergency stop switch is released.',
         },
         'cn': {
             'title': '关节欠压',
@@ -230,7 +230,7 @@ ServoCodeMap = {
     },
     49: {
         'en': {
-            'title': 'EEPROM Read and Write Error.',
+            'title': 'EEPROM Read and Write Error',
             'desc': 'Please restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.',
         },
         'cn': {
@@ -627,7 +627,7 @@ ControllerErrorCodeMap = {
     27: {
         'en': {
             'title': 'Command Reply Error',
-            'desc': 'Pleas retry, or restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.'
+            'desc': 'Please retry, or restart the xArm with the Emergency Stop Button on the xArm Controller. If multiple reboots are not working, please contact technical support.'
         },
         'cn': {
             'title': '回复指令错误 ',
@@ -681,17 +681,17 @@ ControllerErrorCodeMap = {
         },
         'cn': {
             'title': '控制器GPIO模块报错',
-            'desc': '请检查控制器GPIO模块的连接，并重新上下电。如该错误反复出现，请联系技术支持。'
+            'desc': '请检查控制器GPIO模块的连接, 并重新上下电。如该错误反复出现, 请联系技术支持。'
         }
     },
     34: {
         'en': {
             'title': 'Recording Timeout',
-            'desc': 'The track recording duration exceeds the maximum duration limit of 5 minutes. It is recommended to re-record.'
+            'desc': 'The trajectory recording duration exceeds the maximum duration limit of 5 minutes. It is recommended to re-record.'
         },
         'cn': {
             'title': '轨迹录制超时',
-            'desc': '轨迹录制时间超过最大限制5分钟，建议重新录制。'
+            'desc': '轨迹录制时间超过最大限制5分钟, 建议重新录制。'
         }
     },
     35: {
@@ -924,7 +924,7 @@ RobotiqErrorCodeMap = {
     0x05: {
         'en': {
             'title': 'Robotiq Gripper',
-            'desc': 'Action delayed, activation(reactivation) must be completed prior to perfmoring the action'
+            'desc': 'Action delayed, activation(reactivation) must be completed prior to performing the action'
         },
         'cn': {
             'title': 'Robotiq 机械爪',
@@ -994,7 +994,7 @@ RobotiqErrorCodeMap = {
     0x0D: {
         'en': {
             'title': 'Robotiq Gripper',
-            'desc': 'Activation fault, please verify that no interference or other erroro ccurred'
+            'desc': 'Activation fault, please verify that no interference or other error occurred'
         },
         'cn': {
             'title': 'Robotiq 机械爪',
@@ -1067,7 +1067,7 @@ BioGripperErrorCodeMap = {
     },
 }
 
-LinearTrackErrorCodeMap = {
+LinearMotorErrorCodeMap = {
     10: {
         'en': {
             'title': 'Linear Motor Current Detection Error',
@@ -1180,7 +1180,7 @@ LinearTrackErrorCodeMap = {
     },
     35: {
         'en': {
-            'title': 'Linear Motor type error',
+            'title': 'Linear Motor Type Error',
             'desc': 'Please contact technical support.',
         },
         'cn': {
@@ -1200,8 +1200,8 @@ LinearTrackErrorCodeMap = {
     },
     39: {
         'en': {
-            'title': 'Linear Motor over voltage',
-            'desc': 'please contact technical support.',
+            'title': 'Linear Motor Over Voltage',
+            'desc': 'Please contact technical support.',
         },
         'cn': {
             'title': '直线滑轨过压',
@@ -1210,8 +1210,8 @@ LinearTrackErrorCodeMap = {
     },
     40: {
         'en': {
-            'title': 'Linear Moter undervoltage',
-            'desc': 'please contact technical support.',
+            'title': 'Linear Motor Undervoltage',
+            'desc': 'Please contact technical support.',
         },
         'cn': {
             'title': '直线滑轨欠压',
@@ -1239,6 +1239,7 @@ LinearTrackErrorCodeMap = {
         }
     },
 }
+LinearTrackErrorCodeMap = LinearMotorErrorCodeMap
 
 FtSensorErrorCodeMap = {
     64: {
@@ -1283,7 +1284,7 @@ FtSensorErrorCodeMap = {
     },
     68: {
         'en': {
-            'title': 'Six-axis Force Torque Sensor Z-direction Torque Exceeds Limitrection',
+            'title': 'Six-axis Force Torque Sensor Z-direction Torque Exceeds Limit',
             'desc': '',
         },
         'cn': {
@@ -1415,10 +1416,11 @@ class RobotIqError(BaseCode):
         super(RobotIqError, self).__init__(code, status=status)
 
 
-class LinearTrackError(BaseCode):
+class LinearMotorError(BaseCode):
     def __init__(self, code, status=0):
-        self._code_map = LinearTrackErrorCodeMap
-        super(LinearTrackError, self).__init__(code, status=status)
+        self._code_map = LinearMotorErrorCodeMap
+        super(LinearMotorError, self).__init__(code, status=status)
+LinearTrackError = LinearMotorError
 
 
 class FtSensorError(BaseCode):

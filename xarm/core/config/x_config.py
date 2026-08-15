@@ -13,11 +13,14 @@ class XCONF(object):
     ARM_AXIS_NUM = 7
     MAX_CMD_NUM = 1024
 
-    TRACK_ID = 1
+    LINEAR_MOTOR_ID = 1
+    TRACK_ID = LINEAR_MOTOR_ID # 不再使用, 保留只为了兼容旧代码
     GRIPPER_ID = 8
 
-    TGPIO_HOST_ID = 9
-    LINEER_TRACK_HOST_ID = 11
+    ROBOT_RS485_HOST_ID = 9
+    CONTROL_BOX_RS485_HOST_ID = 11
+    TGPIO_HOST_ID = ROBOT_RS485_HOST_ID # 不再使用, 保留只为了兼容旧代码
+    LINEER_TRACK_HOST_ID = CONTROL_BOX_RS485_HOST_ID # 不再使用, 保留只为了兼容旧代码
 
     def __init__(self):
         pass
@@ -253,6 +256,7 @@ class XCONF(object):
 
     class SocketConf:
         TCP_CONTROL_PORT = 502
+        TCP_REPORT_RT_PORT = 30000
         TCP_REPORT_NORM_PORT = 30001
         TCP_REPORT_RICH_PORT = 30002
         TCP_REPORT_REAL_PORT = 30003
@@ -325,7 +329,7 @@ class XCONF(object):
         GET_SAFE_LEVEL = 57
 
         SET_REDUCED_JRANGE = 58
-        SET_FENSE_ON = 59
+        SET_FENCE_ON = 59
         SET_COLLIS_REB = 60
 
         SET_TRAJ_RECORD = 61
@@ -375,7 +379,7 @@ class XCONF(object):
         IDEN_FRIC = 115
 
         TGPIO_MB_TIOUT = 123
-        TGPIO_MODBUS = 124
+        RS485_RTU = 124
         TGPIO_ERR = 125
         TGPIO_W16B = 127
         TGPIO_R16B = 128
@@ -404,16 +408,16 @@ class XCONF(object):
         FTSENSOR_GET_DATA_OLD = 150  # only available in firmware version < 1.8.3
         FTSENSOR_GET_DATA = 200
         FTSENSOR_ENABLE = 201
-        FTSENSOR_SET_APP = 202
-        FTSENSOR_GET_APP = 203
+        FTSENSOR_SET_MODE = 202
+        FTSENSOR_GET_MODE = 203
         IDEN_LOAD = 204
-        FTSENSOR_CALI_LOAD_OFFSET = 205
+        FTSENSOR_SET_LOAD_OFFSET = 205
         FTSENSOR_SET_ZERO = 206
-        IMPEDANCE_CONFIG = 207
+        ADMITTANCE_CONFIG = 207
         FORCE_CTRL_PID = 208
         FORCE_CTRL_CONFIG = 209
-        IMPEDANCE_CTRL_MBK = 210
-        IMPEDANCE_CTRL_CONFIG = 211
+        ADMITTANCE_CTRL_MKB = 210
+        ADMITTANCE_CTRL_CONFIG = 211
         FTSENSOR_GET_CONFIG = 212
         
         GET_TRAJ_SPEEDING = 230
@@ -423,7 +427,7 @@ class XCONF(object):
         GET_COMMON_INFO = 234
 
         TGPIO_COM_TIOUT = 240
-        TGPIO_COM_DATA = 241
+        RS485_AGENT = 241
 
         FEEDBACK_CHECK = 253
         SET_FEEDBACK_TYPE = 254
@@ -491,7 +495,7 @@ class XCONF(object):
         ANALOG_IO2 = 0x0A17
 
         BACK_ORIGIN = 0x0A0A
-        STOP_TRACK = 0x0A0E
+        STOP_LINEAR_MOTOR = 0x0A0E
 
     class UxbusState:
         ERR_CODE = 1  # 有尚未清除的错误

@@ -1,5 +1,7 @@
 # xArm-Python-SDK
 
+[![PyPI Downloads](https://static.pepy.tech/badge/xarm-python-sdk)](https://pepy.tech/projects/xarm-python-sdk)
+
 ## Overview
 xArm Python SDK
 
@@ -9,17 +11,27 @@ xArm Python SDK
 - Protect the arm before unlocking the joint.
 
 ## Installation
-&ensp;&ensp;you can run examples without installation.Only Python3 is supported.
-- download
-
+&ensp;&ensp;you can run examples without installation. Only Python 3 is supported.
+- Install from source code
+  - download
+    ```bash
+    git clone https://github.com/xArm-Developer/xArm-Python-SDK.git
+    cd xArm-Python-SDK
+    ```
+  - install
+    - install with build
+      ```bash
+      pip install build
+      python -m build
+      pip install dist/xarm_python_sdk-1.16.0-py3-none-any.whl
+      ```
+    - install with source code
+      ```bash
+      pip install .
+      ```
+- Install from pypi
   ```bash
-  git clone https://github.com/xArm-Developer/xArm-Python-SDK.git
-  ```
-
-- install
-
-  ```bash
-  python setup.py install
+  pip install xarm-python-sdk
   ```
 
 ## Doc
@@ -30,6 +42,25 @@ xArm Python SDK
 - #### [UFACTORY ModbusTCP Manual](doc/UF_ModbusTCP_Manual.md)
 
 ## Update Summary
+- > ### 1.18.3/1.18.4
+  - Added BytesData for data conversion
+  - Added data structure for report data
+  - Update the reported data for port 30002
+  - Increase execution speed by adding parameter to reduce the number of checks performed by the gripper APIs
+
+- > ### 1.17.0/1.17.1
+  - Change some API names
+
+- > ### 1.16.0
+  - Added parameter to support get raw data of the Six-axis Force Torque Sensor
+  - Added an interface to control xArm Gripper G2
+  - Optimize the interface for controlling BIO Gripper G2
+  - Extend the get_joint_states interface
+
+- > ### 1.15.0
+  - Added the Six-axis Force Torque Sensor collision detection related interfaces
+  - Added support for the new version of BIO Gripper control interface
+
 - > ### 1.14.7
   - Fixed the problem that single joint or direction movement fails in some cases (valid from firmware 2.5.0)
   - Added standard ModbusTcp client and Gcode client
@@ -37,31 +68,50 @@ xArm Python SDK
   - Support new version of vacuum gripper
   - Support the studio-2.5.0 blockly project conversion to python
 
-- > ### 1.13.30
-  - Supports obtaining unsaved track recording duration
-  - Fix the abnormal path of running blockly program in some cases
-  - Fix the return format of getting C23 and C38 errors
-  - Supports obtaining identification status
+- > ### [More](ReleaseNotes.md)
 
-- > ### 1.13.19
-  - Friction identification supports xarm7_mirror model
-  - Fix the abnormal return value of blockly conversion robotiq related interface
-  
-- > ### 1.13.0
-  - Compatible with the standard Modbus TCP protocol, providing part of the standard Modbus TCP protocol interface
-
-- > ### 1.12.2
-  - Support partial Task feedback (requires firmware version greater than or equal to v2.1.0)
-
-- > ### 1.11.6
-  - Correct the ambiguity that the `set_position_aa` interface is true when both relative and is_tool_coord are true. After the correction, when is_tool_coord is true, relative is invalid (previously is_tool_coord was invalid when relative was true)
-
-- > ### 1.11.5
-  - Optimization pause time is too long (wait=true)
-  - Add common motion api (Enabled after firmware version 1.11.100)
-  - The Cartesian motion-related interface adds the motion_type parameter to determine the planning method (Enabled after firmware version 1.11.100)
-
-- >### [More](ReleaseNotes.md)
+## API Change List
+  | OLD API NAME   | NEW API NAME  |  SDK VERSION  |
+  | -------------- | ------------- |  ------------  |
+  | set_tgpio_modbus_timeout  |  set_rs485_timeout  |  1.17.1  |
+  | get_tgpio_modbus_timeout  |  get_rs485_timeout  |  1.17.1  |
+  | set_tgpio_modbus_baudrate  |  set_rs485_baudrate  |  1.17.1  |
+  | get_tgpio_modbus_baudrate  |  get_rs485_baudrate  |  1.17.1  |
+  | getset_tgpio_modbus_data  |  set_rs485_data  |  1.17.1  |
+  | set_impedance  |  set_ft_sensor_admittance_parameters  |  1.17.0  |
+  | set_impedance_mbk  |  set_ft_sensor_admittance_parameters  |  1.17.0  |
+  | set_impedance_config  |  set_ft_sensor_admittance_parameters  |  1.17.0  |
+  | set_force_control_pid  |  set_ft_sensor_force_parameters  |  1.17.0  |
+  | config_force_control  |  set_ft_sensor_force_parameters  |  1.17.0  |
+  | ft_sensor_set_zero  |  set_ft_sensor_zero  |  1.17.0  |
+  | ft_sensor_iden_load  |  iden_ft_sensor_load_offset  |  1.17.0  |
+  | ft_sensor_cali_load  |  set_ft_sensor_load_offset  |  1.17.0  |
+  | ft_sensor_enable  |  set_ft_sensor_enable  |  1.17.0  |
+  | ft_sensor_app_set  |  set_ft_sensor_mode  |  1.17.0  |
+  | ft_sensor_app_get  |  get_ft_sensor_mode  |  1.17.0  |
+  | get_linear_track_registers  |  get_linear_motor_registers  |  1.17.0  |
+  | get_linear_track_pos  |  get_linear_motor_pos  |  1.17.0  |
+  | get_linear_track_status  |  get_linear_motor_status  |  1.17.0  |
+  | get_linear_track_error  |  get_linear_motor_error  |  1.17.0  |
+  | get_linear_track_is_enabled  |  get_linear_motor_is_enabled  |  1.17.0  |
+  | get_linear_track_on_zero  |  get_linear_motor_on_zero  |  1.17.0  |
+  | get_linear_track_sci  |  get_linear_motor_sci  |  1.17.0  |
+  | get_linear_track_sco  |  get_linear_motor_sco  |  1.17.0  |
+  | clean_linear_track_error  |  clean_linear_motor_error  |  1.17.0  |
+  | set_linear_track_enable  |  set_linear_motor_enable  |  1.17.0  |
+  | set_linear_track_speed  |  set_linear_motor_speed  |  1.17.0  |
+  | set_linear_track_back_origin  |  set_linear_motor_back_origin  |  1.17.0  |
+  | set_linear_track_pos  |  set_linear_motor_pos  |  1.17.0  |
+  | set_linear_track_stop  |  set_linear_motor_stop  |  1.17.0  |
+  | shutdown_system  |  system_control  |  1.13.3  |
+  | get_suction_cup  |  get_vacuum_gripper  |  1.5.0  |
+  | set_suction_cup  |  set_vacuum_gripper  |  1.5.0  |
+  | get_ik  |  get_inverse_kinematics  |  1.0.0  |
+  | get_fk  |  get_forward_kinematics  |  1.0.0  |
+  | set_sleep_time  |  set_pause_time  |  1.0.0  |
+  | get_gpio_digital  |  get_tgpio_digital  |  1.0.0  |
+  | set_gpio_digital  |  set_tgpio_digital  |  1.0.0  |
+  | get_gpio_analog  |  get_tgpio_analog  |  1.0.0  |
 
 
 ## [Example](example/wrapper/)
@@ -146,7 +196,7 @@ xArm Python SDK
 
 - ##### [6001-set_reduced_mode](example/wrapper/common/6001-set_reduced_mode.py)
 
-- ##### [6002-set_fense_mode](example/wrapper/common/6002-set_fense_mode.py)
+- ##### [6002-set_fence_mode](example/wrapper/common/6002-set_fence_mode.py)
 
 - ##### [7001-servo_j](example/wrapper/common/7001-servo_j.py)
 
@@ -158,7 +208,7 @@ xArm Python SDK
 
 - ##### [8001-force_tech](example/wrapper/common/8001-force_tech.py)
 
-- ##### [8002-impedance](example/wrapper/common/8002-impedance.py)
+- ##### [8002-admittance-control](example/wrapper/common/8002-admittance_control.py)
 
 - ##### [8003-force_control](example/wrapper/common/8003-force_control.py)
 
@@ -170,7 +220,7 @@ xArm Python SDK
 
 - ##### [8010-get_ft_sensor_config](example/wrapper/common/8010-get_ft_sensor_config.py)
 
-- ##### [9000-set_linear_track](example/wrapper/common/9000-set_linear_track.py)
+- ##### [9000-set_linear_motor](example/wrapper/common/9000-set_linear_motor.py)
 
 - ##### [blockly_to_python](example/wrapper/tool/blockly_to_python.py)
 
@@ -251,7 +301,7 @@ xArm Python SDK
   arm.save_conf()
   ```
 
-- #### Gripper
+- #### Gripper/Gripper G2
   ```python
   arm.set_gripper_enable(...)
   arm.set_gripper_mode(...)
@@ -260,6 +310,10 @@ xArm Python SDK
   arm.get_gripper_position()
   arm.get_gripper_err_code()
   arm.clean_gripper_error()
+  
+  # only Gripper G2
+  arm.get_gripper_g2_position()
+  arm.set_gripper_g2_position(...)
   ```
 
 - #### BIO Gripper
@@ -267,11 +321,15 @@ xArm Python SDK
   ```python
   arm.set_bio_gripper_enable(...)
   arm.set_bio_gripper_speed(...)
-  arm.open_bio_grippe(...)
+  arm.open_bio_gripper(...)
   arm.close_bio_gripper(...)
   arm.get_bio_gripper_status()
   arm.get_bio_gripper_error()
   arm.clean_bio_gripper_error()
+
+  # only BIO Gripper G2
+  arm.get_bio_gripper_g2_position()
+  arm.set_bio_gripper_g2_position(...)
   ```
 
 - #### RobotIQ Gripper
@@ -285,13 +343,14 @@ xArm Python SDK
   arm.robotiq_get_status(...)
   ```
 
-- #### Modbus of the end tools
+- #### Modbus of the RS485
 
   ```python
-  arm.set_tgpio_modbus_timeout(...)
-  arm.set_tgpio_modbus_baudrate(...)
-  arm.get_tgpio_modbus_baudrate(...)
-  arm.getset_tgpio_modbus_data(...)
+  arm.set_rs485_timeout(...)
+  arm.get_rs485_timeout(...)
+  arm.set_rs485_baudrate(...)
+  arm.get_rs485_baudrate(...)
+  arm.set_rs485_data(...)
   ```
 
 - #### GPIO
@@ -314,40 +373,37 @@ xArm Python SDK
   arm.set_cgpio_analog_with_xyz(...)
   ```
 
-- #### Linear Track
+- #### Linear Motor
   
   ```python
-  arm.get_linear_track_pos()
-  arm.get_linear_track_status()
-  arm.get_linear_track_error()
-  arm.get_linear_track_is_enabled()
-  arm.get_linear_track_on_zero()
-  arm.get_linear_track_sci()
-  arm.get_linear_track_sco()
+  arm.get_linear_motor_pos()
+  arm.get_linear_motor_status()
+  arm.get_linear_motor_error()
+  arm.get_linear_motor_is_enabled()
+  arm.get_linear_motor_on_zero()
+  arm.get_linear_motor_sci()
+  arm.get_linear_motor_sco()
 
-  arm.clean_linear_track_error(...)
-  arm.set_linear_track_enable(...)
-  arm.set_linear_track_speed(...)
-  arm.set_linear_track_back_origin(...)
-  arm.set_linear_track_pos(...)
-  arm.set_linear_track_stop(...)
+  arm.clean_linear_motor_error(...)
+  arm.set_linear_motor_enable(...)
+  arm.set_linear_motor_speed(...)
+  arm.set_linear_motor_back_origin(...)
+  arm.set_linear_motor_pos(...)
+  arm.set_linear_motor_stop(...)
   ```
 
 - #### FT Sensor
   ```python
-  arm.set_impedance(...)
-  arm.set_impedance_mbk(...)
-  arm.set_impedance_config(...)
-  arm.config_force_control(...)
-  arm.set_force_control_pid(...)
-  arm.ft_sensor_set_zero(...)
-  arm.ft_sensor_iden_load(...)
-  arm.ft_sensor_cali_load(...)
-  arm.ft_sensor_enable(...)
-  arm.ft_sensor_app_set(...)
-  arm.ft_sensor_app_get(...)
+  arm.set_ft_sensor_enable(...)
+  arm.set_ft_sensor_mode(...)
+  arm.get_ft_sensor_mode(...)
+  arm.set_ft_sensor_zero(...)
+  arm.iden_ft_sensor_load_offset(...)
+  arm.set_ft_sensor_load_offset(...)
+  arm.set_ft_sensor_admittance_parameters(...)
+  arm.set_ft_sensor_force_parameters(...)
   arm.get_ft_sensor_data(...)
-  arm.get_ft_senfor_config(...)
+  arm.get_ft_sensor_config(...)
   arm.get_ft_sensor_error(...)
   ```
 

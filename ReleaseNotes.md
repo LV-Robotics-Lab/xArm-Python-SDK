@@ -1,6 +1,24 @@
 # xArm-Python-SDK Release Notes
 
 ## Update Summary
+- > ### 1.18.3/1.18.4
+  - Added BytesData for data conversion
+  - Added data structure for report data
+  - Update the reported data for port 30002
+  - Increase execution speed by adding parameter to reduce the number of checks performed by the gripper APIs
+
+- > ### 1.17.0/1.17.1
+  - Change some API names
+
+- > ### 1.16.0
+  - Added parameter to support get raw data of the Six-axis Force Torque Sensor
+  - Added an interface to control xArm Gripper G2
+  - Optimize the interface for controlling BIO Gripper G2
+  - Extend the get_joint_states interface
+
+- > ### 1.15.0
+  - Added the Six-axis Force Torque Sensor collision detection related interfaces
+  - Added support for the new version of BIO Gripper control interface
 
 - > ### 1.14.7
   - Fixed the problem that single joint or direction movement fails in some cases (valid from firmware 2.5.0)
@@ -10,7 +28,7 @@
   - Support the studio-2.5.0 blockly project conversion to python
 
 - > ### 1.13.30
-  - Supports obtaining unsaved track recording duration
+  - Supports obtaining unsaved trajectory recording duration
   - Fix the abnormal path of running blockly program in some cases
   - Fix the return format of getting C23 and C38 errors
   - Supports obtaining identification status
@@ -71,7 +89,7 @@
   - Support for blocky code conversion and operation of xArmStudio-1.8.0
   - The Velocity interface supports the duration parameter (requires firmware 1.8.0 or higher)
   - Added identification interface (current identification and torque identification)
-  - Support linear track interface
+  - Support linear motor interface
   - Support calling some studio APIs
 
 - > ### 1.6.9
@@ -80,7 +98,7 @@
   - Support velocity control
   - Support calibrate tcp offset and user offset
 
-- - > ### 1.6.5
+- > ### 1.6.5
 
   - Support for blocky code conversion and operation of xArmStudio1.6.5
 
@@ -97,7 +115,7 @@
 
 - > ### 1.5.0
 
-  - The new parameter of `set_servo_cartisian` interface is used to support servo cartisian movement of tool coordinate system
+  - The new parameter of `set_servo_cartesian` interface is used to support servo cartesian movement of tool coordinate system
   - Support delayed trigger digital IO
   - Support position detection trigger digital IO
   - Support configure the stop state to automatically reset IO signal
