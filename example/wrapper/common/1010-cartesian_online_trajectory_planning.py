@@ -37,14 +37,14 @@ else:
             print('input error, exit')
             sys.exit(1)
 ########################################################
-ip = '192.168.1.232'
+
 arm = XArmAPI(ip)
 arm.motion_enable(enable=True)
 arm.set_mode(0)
 arm.set_state(state=0)
 
-# arm.move_gohome(wait=True)
-arm.set_position(x=400, y=-50, z=250, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
+arm.move_gohome(wait=True)
+arm.set_position(x=400, y=-50, z=150, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
 
 # set mode: cartesian online trajectory planning mode
 # the running command will be interrupted when the next command is received
@@ -57,10 +57,10 @@ speed = 60
 for i in range(10):
     # run on mode(7)
     # the running command will be interrupted, and run the new command
-    arm.set_position(x=400, y=-150, z=250, roll=-180, pitch=0, yaw=0, speed=speed, wait=False)
+    arm.set_position(x=400, y=-150, z=150, roll=-180, pitch=0, yaw=0, speed=speed, wait=False)
     time.sleep(1)
     # the running command will be interrupted, and run the new command
-    arm.set_position(x=400, y=100, z=250, roll=-180, pitch=0, yaw=0, speed=speed, wait=False)
+    arm.set_position(x=400, y=100, z=150, roll=-180, pitch=0, yaw=0, speed=speed, wait=False)
     time.sleep(1)
 
 # set_mode: position mode
